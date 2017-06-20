@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style type="text/css">
+.container {
+	width: 100%;
+	height: 500px;
+}
+
+.img-con {
+	position: relative;
+	width: 1000px;
+	height: 500px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+.img-con2 {
+	position: absolute;
+	z-index: 4;
+	height: 500px;
+}
+
+img {
+	width: 1000px;
+	height: 500px;
+	float: left;
+}
+
+.clearfix {
+	clear: both;
+}
+
+.left-btn, .right-btn {
+	display: block;
+	position: absolute;
+	z-index: 8;
+	top: 35%;
+	width: 100px;
+	height: 100px;
+	font-size: 50px;
+	line-height: 100px;
+	background-color: rgba(0, 0, 0, 0.7);
+	text-align: center;
+	font-family:"宋体";
+	color: white;
+	cursor: pointer;
+	-webkit-user-select: none;
+	text-shadow: 0 0 5px white;
+}
+.left-btn span{
+	animation: change-left 2s linear infinite;
+}
+.right-btn span{
+	animation: change-right 2s linear infinite;
+}
+.left-btn span:hover,.right-btn span:hover{
+	animation:none;
+}
+.left-btn {
+	left: 0;
+}
+
+.right-btn {
+	right: 0;
+}
+.left-btn span ,.right-btn span{
+	display: block;
+	width:100px;
+	height:100px;
+	margin: 0;
+	padding: 0;
+}
+ul,li{
+	list-style: none;
+	margin:0;
+	padding:0;
+}
+.bottom{
+	position: absolute;
+	display:block;
+	bottom:0;
+	z-index:8;
+	width:100%;
+	height:100px;
+	background-color:rgba(0,0,0,0.7);
+}
+@font-face{
+	font-family:'AIAFONT';
+	src:url("font/AIASans.eot"),url("font/AIASans.ttf");
+}
+li{
+	width:25%;
+	height:100px;
+	float:left;
+	line-height:100px;
+	font-family:'AIAFONT';
+	font-size:35px;
+	text-align: center;
+	color:white;
+}
+
+.active{
+	background-color:#fb2e2e;
+	opacity:0.7;
+}
+.process-line{
+	position: absolute;
+	display:none;
+	bottom:0;
+	z-index:8;
+	width:0;
+	height:8px;
+	background-color:rgba(247,47,47,0.7);
+}
+@keyframes change-left{
+	0%{margin-left: 10px;}
+	50%{margin-left: -30px;}
+	100%{margin-left: 10px;}
+}
+@keyframes change-right{
+	0%{margin-left: -10px;}
+	50%{margin-left: 30px;}
+	100%{margin-left: -10px;}
+}
+</style>
+<script src="js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="img-con">
+			<div class="left-btn"><span><<</span></div>
+			<div class="right-btn"><span>>></span></div>
+			<div class="img-con2">
+				<img alt="1" src="img/1.jpg"> 
+				<img alt="2" src="img/2.jpg"> 
+				<img alt="3" src="img/3.jpg">
+				<img alt="4" src="img/4.jpg">
+			</div>
+			<div class="clearfix"></div>
+			<div class="process-line"></div>
+			<div class="bottom">
+				<ul>
+					<li>first</li>
+					<li>second</li>
+					<li>third</li>
+					<li>fourth</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	<script>
+   var moveto=1;
+   var imglength=$("img").length;
+   var movelength=$(".img-con").outerWidth();
+   //var movelength= document.body.offsetWidth;
+   var img=$("img");
+   var liarr=$("li");
+   //console.log(movelength);
+   //var conwidth=movelength*(imglength+2)+"px";
+   //设置容器宽度为网页可见区
+   //$(".img-con").css("width",movelength);
+   //$("img").css("width",movelength);
+   //设置图片容器偏移位置
+   $(".img-con2").css("width",movelength*(imglength+2));
+   $(".img-con2").css("left",-movelength*moveto);
+   var appendfistimg=$(img[imglength-1]).clone();
+   var appendlastimg=$(img[0]).clone();
+   $(".img-con2").prepend(appendfistimg);
+   $(".img-con2").append(appendlastimg);
+   imglength=$("img").length;
+   $(liarr[0]).addClass("active");
+   //点击左边按钮触发的函数
+   $(".left-btn").click(function(){
+    if(moveto==0){ 
+     moveto=imglength-2;
+     $(".img-con2").css("left",-movelength*moveto);
+     $(".img-con2").stop().animate({left:-movelength*(moveto-1)},450);
+     $(".process-line").stop().animate({width:movelength},450);
+     moveto--;
+    }
+    else{
+     moveto--;
+     $(".img-con2").stop().animate({left:-movelength*moveto},450);
+     $(".process-line").stop().animate({width:movelength},450);
+    }
+    //改变背景颜色
+    for(var i=0;i<$("li").length;i++){
+		   $(liarr[i]).removeClass("active"); 
+	   }
+    if(moveto==0){
+    	$(liarr[liarr.length-1]).addClass("active");
+    }
+    $(liarr[moveto-1]).addClass("active");
+    //console.log(moveto);
+   })
+   function movetoright(){
+	   if(moveto==(imglength-1)){
+		     moveto=1;
+		     $(".img-con2").css("left",-movelength*moveto);
+		     $(".img-con2").stop().animate({left:-movelength*(moveto+1)},450);
+		     $(".process-line").css("width",0);
+		     $(".process-line").stop().animate({width:movelength},450);
+		     moveto++;
+		  }
+		else{
+		     moveto++;
+		     $(".img-con2").stop().animate({left:-movelength*moveto},450);
+		     $(".process-line").css("width",0);
+		     $(".process-line").stop().animate({width:movelength},450);
+		    } 
+   }
+   //点击右边按钮触发的函数
+   $(".right-btn").click(function(){
+    //console.log(moveto);
+    movetoright();
+  	//改变背景颜色
+    for(var i=0;i<$("li").length;i++){
+		   $(liarr[i]).removeClass("active"); 
+	   }
+  	if(moveto==5){
+  		$(liarr[0]).addClass("active");
+  	}
+    $(liarr[moveto-1]).addClass("active");
+   })
+   //鼠标在bottom上移动时触发的事件
+   $("li").hover(function(){
+	   //console.log($(this).index());
+	   moveto=$(this).index()+1;
+	   for(var i=0;i<$("li").length;i++){
+		   $(liarr[i]).removeClass("active"); 
+	   }
+	   $(liarr[moveto-1]).addClass("active"); 
+	   $(".img-con2").stop().animate({left:-movelength*moveto},450); 
+	   $(".process-line").css("width",0);
+	   $(".process-line").stop().animate({width:movelength},450);
+   },function(){
+	   for(var i=0;i<$("li").length;i++){
+		   $(liarr[i]).removeClass("active"); 
+	   }
+   })
+   $(".img-con,.bottom").mouseleave(function(){
+	   $(liarr[moveto-1]).addClass("active"); 
+   })
+   //图片自动滚动
+   var initslide;
+   function autoslide(){
+	   //console.log("leave con");
+	   initslide=setInterval(function(){
+		   movetoright();
+		 //改变背景颜色
+		    for(var i=0;i<$("li").length;i++){
+				   $(liarr[i]).removeClass("active"); 
+			   }
+		  	if(moveto==5){
+		  		$(liarr[0]).addClass("active");
+		  	}
+		    $(liarr[moveto-1]).addClass("active");
+	   },2000)
+   }
+   autoslide();
+   //鼠标移动到容器里时清除setInterval,离开时恢复
+   $(".img-con").hover(function(){
+	   		//console.log("in con");
+		   	if(initslide!=null){
+		   		clearInterval(initslide);
+		   	}
+   },function(){
+	   autoslide();
+   })
+  </script>
+</body>
+</html>
